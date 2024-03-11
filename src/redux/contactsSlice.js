@@ -19,12 +19,7 @@ const contactsSlice = createSlice({
     reducers: {
         addContact: {
             reducer(state, { payload }) {
-                state.contacts.find(item => item.name.toLowerCase().trim() === payload.name.toLowerCase().trim())
-                    ? toast.info(`You have got "${payload.name}" name`, {
-                        autoClose: 2000,
-                        theme: "colored",
-                    })
-                    : state.contacts.push(payload)
+                state.contacts.push(payload)
             },
             prepare(name, number) {
                 return {

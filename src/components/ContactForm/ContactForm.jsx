@@ -2,8 +2,10 @@ import { IoPersonAdd } from 'react-icons/io5';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 import { Button, Form, Input, LabelName } from './ContactForm.styled';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from '../../redux/contactsSlice';
+import { getContacts } from '../../redux/selectors';
+import { toast } from 'react-toastify';
 
 export default function ContactForm() {
   const initialState = { name: '', number: '' };
@@ -11,11 +13,11 @@ export default function ContactForm() {
 
   const nameInputId = nanoid();
   const numberInputId = nanoid();
+  const contactsRedux = useSelector(getContacts);
   const dispatch = useDispatch();
 
   const handleNameChange = e => {
     const { name, value } = e.target;
-
     setState(prev => {
       return { ...prev, [name]: value };
     });
@@ -26,8 +28,15 @@ export default function ContactForm() {
 
     const form = e.target;
     const { name, number } = state;
-    dispatch(addContact(name, number));
 
+    contactsRedux.contacts.find(
+      item => item.name === state.name.toLowerCase().trim()
+    )
+      ? toast.info(`You have got "${name}" name`, {
+          autoClose: 2000,
+          theme: 'colored',
+        })
+      : dispatch(addContact(name, number));
     form.reset();
   };
 
